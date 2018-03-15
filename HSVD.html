@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Untitled14</title>
+<title>HSVD</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -483,12 +483,11 @@ Z_{ijk} &= \beta_k^TX_{ijk} + a_{ik} + b_{jk} + u_{ik}^Tv_{jk} + \epsilon_{ijk}\
 Z_{ijk}|Z_{jik} &\sim N(\eta_{ijk} + \rho_k\cdot(Z_{jik} - \eta_{jik}), 1 - \rho_k^2)\\
 \text{Pr}(Z_{ijk} | Z_{jik}, Y_{ijk} = 1, \cdots) &\propto \text{Pr}(Y_{ijk} = 1 | \cdots) \cdot \text{Pr}(Z_{ijk} | Z_{jik})\\
 &= 1_{[Z_{ijk > 0}]} \cdot dN(Z_{ijk}; \eta_{ijk} + \rho_k\cdot(Z_{jik} - \eta_{jik}), 1 - \rho_k^2 )
-\end{align*}<h3 id="Update-$\beta_{k}$">Update $\beta_{k}$<a class="anchor-link" href="#Update-$\beta_{k}$">&#182;</a></h3><p>Let $\bar{Z}_{ijk} = Z_{ijk} - a_{ik} - b_{jk} - u_{ik}^Tv_{jk} $
-\begin{align<em>}
-\text{Pr}(\beta<em>k | \bar{Z}</em>{..k}) &amp;\propto \exp{{-\frac{1}{2}(\text{vec}(\bar{Z}<em>{k}) - X_k\beta_k)^T(\text{vec}(\bar{Z}</em>{k}) - X<em>k\beta_k)}} \, \dot \, \exp{{-\frac{1}{2}\beta_k^T\Sigma</em>{\beta}^{-1}\beta<em>k}}\
-&amp;= \exp{{-\frac{1}{2}(\beta_k^TX_k^TX_k\beta_k-2\beta_k^TX_k^T\text{vec}(\bar{Z}</em>{k}))}} \, \dot \, \exp{{-\frac{1}{2}\beta<em>k^T\Sigma</em>{\beta}^{-1}\beta_k}}\
-\end{align</em>}</p>
-<p>Thus, we have $V_n = A_n^{-1}$ where $A_n = A_0 + A_1$, and $A_0 = \Sigma_{\beta}^{-1}$, $A_1 = X_k^TX_k$</p>
+\end{align*}<h3 id="Update-$\beta_{k}$">Update $\beta_{k}$<a class="anchor-link" href="#Update-$\beta_{k}$">&#182;</a></h3><p>Let $\bar{Z}_{ijk} = Z_{ijk} - a_{ik} - b_{jk} - u_{ik}^Tv_{jk} $</p>
+\begin{align*}
+\text{Pr}(\beta_k | \bar{Z}_{..k}) &\propto \exp{\{-\frac{1}{2}(\text{vec}(\bar{Z}_{k}) - X_k\beta_k)^T(\text{vec}(\bar{Z}_{k}) - X_k\beta_k)\}} \, \dot \, \exp{\{-\frac{1}{2}\beta_k^T\Sigma_{\beta}^{-1}\beta_k\}}\\
+&= \exp{\{-\frac{1}{2}(\beta_k^TX_k^TX_k\beta_k-2\beta_k^TX_k^T\text{vec}(\bar{Z}_{k}))\}} \, \dot \, \exp{\{-\frac{1}{2}\beta_k^T\Sigma_{\beta}^{-1}\beta_k\}}\\
+\end{align*}<p>Thus, we have $V_n = A_n^{-1}$ where $A_n = A_0 + A_1$, and $A_0 = \Sigma_{\beta}^{-1}$, $A_1 = X_k^TX_k$</p>
 <p>$\mu_n = V_nm_n$ where $m_n = m_0 + m_1$, and $m_0 = \Sigma_{\beta}\vec{\mu}$ and $m_1 = X_k^T\text{vec}(\bar{Z}_{k})$</p>
 <h3 id="Update-$a_{ik},-b_{ik}$">Update $a_{ik}, b_{ik}$<a class="anchor-link" href="#Update-$a_{ik},-b_{ik}$">&#182;</a></h3><p>Let $\hat{Z}_{ijk} = Z_{ijk} - X_{ijk}\beta_k - u_{ik}^Tv_{jk} $</p>
 \begin{align*}
