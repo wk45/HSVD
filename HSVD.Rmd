@@ -1,3 +1,9 @@
+---
+title: "HLSVD"
+author: "Woo Min Kim"
+date: "4/16/2018"
+output: pdf_document
+---
 
 # Hierarchical Latent SVD Model
 
@@ -135,13 +141,11 @@ p(\Sigma_{uvk}|\vec{Y}, \dots) &\propto \prod_{i=1}^{n_k}\text{dMVN}\Bigg(\begin
 &\sim \text{IWishart}(\Sigma_{uvk}; \nu_{uv} + n_k,[S_{uv} + \sum_{i=1}^{n_k}\begin{pmatrix} u_{ik}\\ v_{ik}\end{pmatrix}\begin{pmatrix} u_{ik}\\ v_{ik}\end{pmatrix}^T]^{-1})
 \end{align*}
 
-
 ## Coding (Temporary)
 
 For the following function, two main arguments are required: data and edge_covariate. Both arguments should follow a list format. For now, the argument, edge_covariate, takes only one edge-specific covariate. 
 
-
-```R
+```{r}
 hsvd = function(data, edge_covariate, dyad_dep = T, num_iter = 1000, verbose = T){
 
   suppressMessages(require(tmvtnorm))
@@ -428,10 +432,8 @@ hsvd = function(data, edge_covariate, dyad_dep = T, num_iter = 1000, verbose = T
 
 ## Testing (with simulated data)
 
-
-```R
+```{r}
 # 2 networks with sizes of 20 and 40.
-
 suppressMessages(library(mvtnorm))
 
 K = 2
@@ -495,8 +497,7 @@ for (k in 1:K){
 }
 ```
 
-
-```R
+```{r}
 # Simulated Adjacency Matrices
 # Diagonals are NAs
 # red pixels are 0s, yellows are 1s
@@ -505,53 +506,12 @@ image(t(Ysim[[1]])[ncol(Ysim[[1]]):1,])
 image(t(Ysim[[2]])[ncol(Ysim[[2]]):1,])
 ```
 
-
-![png](output_5_0.png)
-
-
-
-```R
+```{r}
 # results = hsvd(data = Ysim, edge_covariate = Cov1, dyad_dep = T, num_iter = 3000, verbose = F)
+load("hsvd.rdata") # loading 30,000 posterior samples
 ```
 
-    Loading required package: tmvtnorm
-    Loading required package: Matrix
-    Loading required package: stats4
-    Loading required package: gmm
-    Loading required package: sandwich
-    Loading required package: truncnorm
-    Loading required package: MCMCpack
-    Loading required package: coda
-    Loading required package: MASS
-    ##
-    ## Markov Chain Monte Carlo Package (MCMCpack)
-    ## Copyright (C) 2003-2018 Andrew D. Martin, Kevin M. Quinn, and Jong Hee Park
-    ##
-    ## Support provided by the U.S. National Science Foundation
-    ## (Grants SES-0350646 and SES-0350613)
-    ##
-
-
-
-```R
-load("hsvd.rdata")
-```
-
-
-```R
-beta0_sim
-```
-
-
-<ol class=list-inline>
-	<li>-2.96112744813525</li>
-	<li>-1.19014962796834</li>
-</ol>
-
-
-
-
-```R
+```{r}
 burnin = 5000
 K=2
 {par(mfrow=c(2,2))
@@ -574,19 +534,13 @@ K=2
   }
   par(mfrow=c(1,1))
 }
-
 ```
 
-
-![png](output_9_0.png)
-
-
-
-```R
+```{r}
 k = 1
 
-{par(mfrow=c(4,5))
-  for (i in 1:nk[k]){
+{par(mfrow=c(2,2))
+  for (i in 1:4){
     stat = results$a[[k]][-(1:burnin),i]
     lab = "a"
     
@@ -599,17 +553,12 @@ k = 1
 }
 ```
 
-
-![png](output_10_0.png)
-
-
-
-```R
-{par(mfrow=c(4,4))
+```{r}
+{par(mfrow=c(2,2))
   stat = do.call(rbind,lapply(results$sigma_uv, function(x) c(cov2cor(x))))
   lab = "sigma_uv"
   
-  for (i in 1:16){
+  for (i in 1:4){
     if (NA %in% stat) stat = stat[-which(is.na(stat)),]
     
     plot(stat[,i], type="l", main=paste0(lab,sep = ""))
@@ -619,14 +568,9 @@ k = 1
 }
 ```
 
-
-![png](output_11_0.png)
-
-
 30,000 posterior samples were gathered and trace plots are provided above. As can be seen, the trace plots well captures the true values (red horizontal line). In order to check the shrinkage effects from hierarchical modeling, comparison with AMEN package with real data will follow.
 
-
-```R
+```{r}
 suppressMessages(library(HLSM))
 
 # DATA from HLSM package
@@ -642,13 +586,11 @@ for (i in 1:K){
 nk = unlist(lapply(Y, nrow))
 ```
 
-
-```R
+```{r}
 Chain = hsvd(data = Y, edge_covariate = Cov1, num_iter = 2000, verbose = F)
 ```
 
-
-```R
+```{r results='hide', message=FALSE, warning=FALSE}
 suppressMessages(library(amen))
 
 AME_FIT = list()
@@ -661,10 +603,9 @@ AME_FIT[[k]] = amen::ame_rep(y.array, x.array,
                          symmetric = F, model="bin",
                          nscan = 5000, plot = F, print = F)
 }
-
 ```
 
-```R
+```{r}
 #beta1
 par(mfrow=c(1,2))
 {
@@ -689,9 +630,5 @@ segments(seq(1,15),chain_b1a[,2],seq(1,15),chain_b1a[,3])
 segments(seq(1,15)+0.3,chain_b1b[,2],seq(1,15)+0.3,chain_b1b[,3], col="red")
 }
 ```
-
-
-![png](output_16_0.png)
-
 
 In the data, school 11 has small sample size and its estimation of covariate effect has large variability. However, with shrinkage effect by hierarchical structure, the variabilty of the estimate decreased notably.
